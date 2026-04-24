@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, Response, jsonify
 
 app = Flask(__name__)
 
@@ -29,4 +29,9 @@ def search_precedents():
     }
 
     r = requests.get(url, params=params)
-    return jsonify(r.json())
+
+    return Response(
+        r.text,
+        status=r.status_code,
+        content_type=r.headers.get("Content-Type", "text/plain; charset=utf-8")
+    )
