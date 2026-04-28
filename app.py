@@ -3,7 +3,6 @@ import requests
 from flask import Flask, request, Response
 
 app = Flask(__name__)
-
 LAW_OC = os.environ.get("LAW_OC")
 
 @app.route("/")
@@ -17,8 +16,7 @@ def search_precedents():
         display = request.args.get("display", "5")
         page = request.args.get("page", "1")
 
-       url = "http://www.law.go.kr/DRF/lawSearch.do"
-
+        url = "http://www.law.go.kr/DRF/lawSearch.do"  # ← 들여쓰기 맞춤
         params = {
             "OC": LAW_OC,
             "target": "prec",
@@ -28,21 +26,18 @@ def search_precedents():
             "page": page,
             "sort": "ddes"
         }
-
         headers = {
-    "User-Agent": "Mozilla/5.0",
-    "Accept": "*/*",
-    "Connection": "keep-alive"
-}
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "*/*",
+            "Connection": "keep-alive"
+        }
 
-r = requests.get(url, params=params, headers=headers, timeout=10)
-
+        r = requests.get(url, params=params, headers=headers, timeout=10)  # ← 들여쓰기 맞춤
         return Response(
             r.text,
             status=200,
             content_type="text/plain; charset=utf-8"
         )
-
     except Exception as e:
         return Response(
             f"SERVER ERROR: {str(e)}",
