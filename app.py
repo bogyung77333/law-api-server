@@ -17,7 +17,7 @@ def search_precedents():
         display = request.args.get("display", "5")
         page = request.args.get("page", "1")
 
-        url = "https://www.law.go.kr/DRF/lawSearch.do"
+       url = "http://www.law.go.kr/DRF/lawSearch.do"
 
         params = {
             "OC": LAW_OC,
@@ -29,7 +29,13 @@ def search_precedents():
             "sort": "ddes"
         }
 
-        r = requests.get(url, params=params, timeout=15)
+        headers = {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "*/*",
+    "Connection": "keep-alive"
+}
+
+r = requests.get(url, params=params, headers=headers, timeout=10)
 
         return Response(
             r.text,
