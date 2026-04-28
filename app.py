@@ -16,7 +16,7 @@ def search_precedents():
         display = request.args.get("display", "5")
         page = request.args.get("page", "1")
 
-        url = "http://www.law.go.kr/DRF/lawSearch.do"  # ← 들여쓰기 맞춤
+        url = "https://www.law.go.kr/DRF/lawSearch.do"
         params = {
             "OC": LAW_OC,
             "target": "prec",
@@ -27,12 +27,14 @@ def search_precedents():
             "sort": "ddes"
         }
         headers = {
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "*/*",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "ko-KR,ko;q=0.9",
+            "Referer": "https://www.law.go.kr/",
             "Connection": "keep-alive"
         }
 
-        r = requests.get(url, params=params, headers=headers, timeout=10)  # ← 들여쓰기 맞춤
+        r = requests.get(url, params=params, headers=headers, timeout=15)
         return Response(
             r.text,
             status=200,
