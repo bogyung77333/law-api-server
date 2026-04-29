@@ -1,48 +1,34 @@
-import os
+from flask import Flask, request, jsonify
 import requests
-from flask import Flask, request, Response
+import os
 
 app = Flask(__name__)
+
 LAW_OC = os.environ.get("LAW_OC")
 
 @app.route("/")
 def home():
-    return {"status": "ok", "law_oc_exists": bool(LAW_OC)}
+    return {"status": "ok"}
 
-@app.route("/search-precedents")
-def search_precedents():
-    try:
-        query = request.args.get("query", "덤핑")
-        display = request.args.get("display", "5")
-        page = request.args.get("page", "1")
+@app.route("/law")
+def get_law():
+    params = {
+        "OC": LAW_OC,
+        "target": "eflaw",
+        "type": "JSON",
+        "ID": request.args.get("ID"),
+        "MST": request.args.get("MST"),
+        "efYd": request.args.get("efYd"),
+        "JO": request.args.get("JO")
+    }
 
-        url = "https://www.law.go.kr/DRF/lawSearch.do"
-        params = {
-            "OC": LAW_OC,
-            "target": "prec",
-            "type": "JSON",
-            "query": query,
-            "display": display,
-            "page": page,
-            "sort": "ddes"
-        }
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-            "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "ko-KR,ko;q=0.9",
-            "Referer": "https://www.law.go.kr/",
-            "Connection": "keep-alive"
-        }
+    # None 값 제거
+    params = {k: v for k, v in params.items() if v}
 
-        r = requests.get(url, params=params, headers=headers, timeout=15)
-        return Response(
-            r.text,
-            status=200,
-            content_type="text/plain; charset=utf-8"
-        )
-    except Exception as e:
-        return Response(
-            f"SERVER ERROR: {str(e)}",
-            status=500,
-            content_type="text/plain; charset=utf-8"
-        )
+    url = "https://www.law.go.kr/DRF/lawService.do"
+
+    res = requests.get(url, params=params)
+    return jsonify(res.json())
+
+if __name__ == "__main__":
+    app.run()
